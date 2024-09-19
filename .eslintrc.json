@@ -1,6 +1,6 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
-    "no-var": ["error", { "globals": ["prisma"] }]
+    "no-var": "error"
   }
 }
