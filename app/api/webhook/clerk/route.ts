@@ -47,20 +47,30 @@ export async function POST(req: Request) {
     })
   }
 
-  // Handle the event
   const eventType = evt.type;
+  
   if (eventType === 'user.created' || eventType === 'user.updated') {
-    const { id, email_addresses, ...attributes } = evt.data;
+    const { id, email_addresses, username, image_url } = evt.data;
 
     await db.user.upsert({
       where: { clerkId: id as string },
       create: {
         clerkId: id as string,
         email: email_addresses[0].email_address,
+        username: username || email_addresses[0].email_address.split('@')[0],
+        photo: image_url,
       },
       update: {
         email: email_addresses[0].email_address,
+        username: username || email_addresses[0].email_address.split('@')[0],
+        photo: image_url,
       },
+    })
+  } else if (eventType === 'user.deleted') {
+    const { id } = evt.data;
+
+    await db.user.delete({
+      where: { clerkId: id as string },
     })
   }
 
